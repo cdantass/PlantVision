@@ -1,0 +1,22 @@
+.planning/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Model artifacts (large binary)
+codigo/plant_model.h5
+
+# OS / System
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Windows device files (prevent Git index errors)
+NUL
