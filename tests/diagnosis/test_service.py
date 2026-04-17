@@ -28,8 +28,19 @@ MODEL_FILE = CODIGO_DIR / "plant_model.h5"
 CLASS_NAMES = [
     "Pepper__bell___Bacterial_spot",
     "Pepper__bell___healthy",
+    "Potato___Early_blight",
+    "Potato___healthy",
+    "Potato___Late_blight",
+    "Tomato__Target_Spot",
+    "Tomato__Tomato_mosaic_virus",
     "Tomato__Tomato_YellowLeaf__Curl_Virus",
-    "Tomato__Tomato_mosaic_virus"
+    "Tomato_Bacterial_spot",
+    "Tomato_Early_blight",
+    "Tomato_healthy",
+    "Tomato_Late_blight",
+    "Tomato_Leaf_Mold",
+    "Tomato_Septoria_leaf_spot",
+    "Tomato_Spider_mites_Two_spotted_spider_mite"
 ]
 
 

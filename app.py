@@ -16,8 +16,19 @@ from diagnosis.types import AnalysisResult
 CLASS_NAMES = [
     "Pepper__bell___Bacterial_spot",
     "Pepper__bell___healthy",
+    "Potato___Early_blight",
+    "Potato___healthy",
+    "Potato___Late_blight",
+    "Tomato__Target_Spot",
+    "Tomato__Tomato_mosaic_virus",
     "Tomato__Tomato_YellowLeaf__Curl_Virus",
-    "Tomato__Tomato_mosaic_virus"
+    "Tomato_Bacterial_spot",
+    "Tomato_Early_blight",
+    "Tomato_healthy",
+    "Tomato_Late_blight",
+    "Tomato_Leaf_Mold",
+    "Tomato_Septoria_leaf_spot",
+    "Tomato_Spider_mites_Two_spotted_spider_mite"
 ]
 MODEL_PATH = Path(__file__).parent / "codigo" / "plant_model.h5"
 OUTPUT_DIR = Path(__file__).parent / "static" / "outputs"
@@ -65,6 +76,12 @@ async def analyze(file: UploadFile = File(...)) -> dict:
         result["heatmap_path"] = heatmap_url
 
         # 5. Cleanup temp file
+        # 5. Gerar interpretação humana
+        status, message, recommendation = generate_plant_feedback(result)
+
+        result["condition"] = f"{status} — {message} ({recommendation})"
+
+        # 6. Cleanup temp file
         Path(tmp_path).unlink(missing_ok=True)
 
         return result
@@ -78,3 +95,26 @@ async def analyze(file: UploadFile = File(...)) -> dict:
 async def serve_index():
     """Serve the frontend HTML page."""
     return FileResponse(Path(__file__).parent / "index.html")
+
+def generate_plant_feedback(result):
+    diagnosis = result["diagnosis"]
+    confidence = result["confidence"]
+
+    readable = diagnosis.replace("_", " ")
+
+    if "healthy" in diagnosis.lower():
+        status = "Saudável"
+        message = "A planta aparenta estar saudável."
+        recommendation = "Continue monitorando."
+
+    elif confidence < 0.6:
+        status = "Inconclusivo"
+        message = "Não foi possível determinar com segurança."
+        recommendation = "Tente outra imagem."
+
+    else:
+        status = "Doente"
+        message = f"A planta apresenta sinais de {readable}."
+        recommendation = "Recomenda-se tratamento."
+
+    return status, message, recommendation

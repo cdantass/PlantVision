@@ -12,6 +12,7 @@ const uploadCard = document.getElementById('upload-card');
 const diagnosisEl = document.getElementById('diagnosis');
 const confidenceEl = document.getElementById('confidence');
 const reliabilityEl = document.getElementById('reliability');
+const conditionEl = document.getElementById('condition'); // ✅ NOVO
 const top3Body = document.getElementById('top3-body');
 const originalImg = document.getElementById('original-image');
 const gradcamImg = document.getElementById('gradcam-image');
@@ -36,8 +37,9 @@ function formatPercent(value) {
 
 async function submitAnalysis() {
     const file = fileInput.files[0];
+
     if (!file) {
-        showError('Please select an image first.');
+        showError('Selecione uma imagem primeiro.');
         return;
     }
 
@@ -58,32 +60,63 @@ async function submitAnalysis() {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.detail || 'Analysis failed.');
+            throw new Error(data.detail || 'Falha na análise.');
         }
 
-        // Success — populate UI
+        // ===============================
+        // RESULTADO PRINCIPAL
+        // ===============================
         diagnosisEl.textContent = data.diagnosis;
-        confidenceEl.textContent = 'Confidence: ' + formatPercent(data.confidence);
-        reliabilityEl.textContent = data.is_reliable ? '✓ Reliable' : '⚠ Not reliable';
-        reliabilityEl.className = data.is_reliable ? 'reliable' : 'unreliable';
+        confidenceEl.textContent = 'Confiança: ' + formatPercent(data.confidence);
 
-        // Top 3 table
+        // ===============================
+        // CONFIABILIDADE
+        // ===============================
+        reliabilityEl.textContent = data.is_reliable
+            ? '✓ Confiável'
+            : '⚠ Baixa confiança';
+
+        reliabilityEl.className = data.is_reliable
+            ? 'reliable'
+            : 'unreliable';
+
+        // ===============================
+        // ✅ ESTADO DA PLANTA (NOVO)
+        // ===============================
+        if (data.condition) {
+            conditionEl.textContent = data.condition;
+
+            if (data.condition.toLowerCase().includes('saudável')) {
+                conditionEl.className = 'condition healthy';
+            } else if (data.condition.toLowerCase().includes('atenção')) {
+                conditionEl.className = 'condition warning';
+            } else {
+                conditionEl.className = 'condition danger';
+            }
+        } else {
+            conditionEl.textContent = '';
+        }
+
+        // ===============================
+        // TOP 3
+        // ===============================
         top3Body.innerHTML = data.top3.map(item => `
             <tr>
-                <td>${item['class']}</td>
+                <td>${item.class}</td>
                 <td>${formatPercent(item.prob)}</td>
             </tr>
         `).join('');
 
-        // Images
+        // ===============================
+        // IMAGENS
+        // ===============================
         originalImg.src = URL.createObjectURL(file);
         gradcamImg.src = data.heatmap_path;
 
-        // Show result
         resultSection.style.display = 'block';
 
     } catch (err) {
-        showError(err.message || 'An error occurred. Please try again.');
+        showError(err.message || 'Erro ao analisar imagem.');
     } finally {
         setLoading(false);
     }
