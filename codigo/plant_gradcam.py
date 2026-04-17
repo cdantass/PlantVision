@@ -1,19 +1,10 @@
-# ----------------------------------------------------------
-# GradCAM — Visualização de atenção do modelo
-# ----------------------------------------------------------
-
 import tensorflow as tf
 import numpy as np
 import cv2
 from pathlib import Path
 
-# IMPORTA DO SEU PROJETO
 from plant_model import diagnose_plant
 
-
-# ----------------------------------------------------------
-# GradCAM
-# ----------------------------------------------------------
 def compute_gradcam(model, img_tensor, class_idx, last_conv_layer="Conv_1"):
     grad_model = tf.keras.models.Model(
         inputs=model.inputs,
@@ -39,11 +30,6 @@ def compute_gradcam(model, img_tensor, class_idx, last_conv_layer="Conv_1"):
     heatmap = heatmap / (tf.reduce_max(heatmap) + 1e-8)
 
     return heatmap.numpy()
-
-
-# ----------------------------------------------------------
-# Overlay visual
-# ----------------------------------------------------------
 
 def load_and_preprocess(img_path):
     import cv2
@@ -82,10 +68,6 @@ def overlay_heatmap(
 
     return overlay
 
-
-# ----------------------------------------------------------
-# Pipeline completo
-# ----------------------------------------------------------
 def run_full_analysis(
     img_path: str,
     model: tf.keras.Model,

@@ -1,7 +1,3 @@
-# ============================================================
-# PlantVision AI — Treinamento e Análise de Doenças em Plantas
-# ============================================================
-
 import numpy as np
 import cv2
 import tensorflow as tf
@@ -12,9 +8,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from plant_model import build_plant_classifier, enable_fine_tuning, diagnose_plant
 
-# ----------------------------------------------------------
-# Constantes globais
-# ----------------------------------------------------------
 IMG_SIZE = (224, 224)
 CONFIDENCE_THRESHOLD = 0.60
 BATCH_SIZE = 32
@@ -28,10 +21,6 @@ CLASS_NAMES = [
     "Tomato__Tomato_mosaic_virus"
 ]
 
-
-# ----------------------------------------------------------
-# Carrega e pré-processa imagem
-# ----------------------------------------------------------
 def load_and_preprocess(img_path: str):
     path = Path(img_path)
 
@@ -52,9 +41,6 @@ def load_and_preprocess(img_path: str):
     return img_original, img_tensor
 
 
-# ----------------------------------------------------------
-# Dataset
-# ----------------------------------------------------------
 def create_datasets():
     global CLASS_NAMES
 
@@ -91,10 +77,6 @@ def create_datasets():
 
     return train_data, val_data
 
-
-# ----------------------------------------------------------
-# Treinamento
-# ----------------------------------------------------------
 def train_model():
     train_data, val_data = create_datasets()
 
@@ -113,6 +95,7 @@ def train_model():
     enable_fine_tuning(model, base_model)
 
     model.fit(
+        
         train_data,
         validation_data=val_data,
         epochs=EPOCHS_FINE_TUNE
@@ -123,10 +106,6 @@ def train_model():
 
     return model
 
-
-# ----------------------------------------------------------
-# Teste simples
-# ----------------------------------------------------------
 def test_single_image(model, img_path):
     _, img_tensor = load_and_preprocess(img_path)
 
@@ -144,10 +123,6 @@ def test_single_image(model, img_path):
 
     return result
 
-
-# ----------------------------------------------------------
-# Execução principal
-# ----------------------------------------------------------
 if __name__ == "__main__":
     model = tf.keras.models.load_model("plant_model.h5")
 
@@ -156,7 +131,7 @@ if __name__ == "__main__":
     "Pepper__bell___healthy",
     "Tomato__Tomato_YellowLeaf__Curl_Virus",
     "Tomato__Tomato_mosaic_virus"
-] # use exatamente os nomes das suas pastas
+]
 
     result = run_full_analysis(
         "teste.jpg",
