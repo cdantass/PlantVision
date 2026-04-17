@@ -69,6 +69,12 @@ async def analyze(file: UploadFile = File(...)) -> dict:
     try:
         # 3. Call service.analyze() with output_dir=OUTPUT_DIR
         result: AnalysisResult = service.analyze(tmp_path, output_dir=str(OUTPUT_DIR))
+        diagnosis_raw = result["diagnosis"]
+        result["diagnosis"] = CLASS_TRANSLATIONS.get(diagnosis_raw, diagnosis_raw)
+        if "top3" in result:
+            for item in result["top3"]:
+                raw_class = item["class"]
+                item["class"] = CLASS_TRANSLATIONS.get(raw_class, raw_class)
 
         # 4. Convert filesystem heatmap_path to URL-relative path
         #    e.g., "C:\...\static\outputs\abc_gradcam.jpg" → "/static/outputs/abc_gradcam.jpg"
@@ -96,13 +102,32 @@ async def serve_index():
     """Serve the frontend HTML page."""
     return FileResponse(Path(__file__).parent / "index.html")
 
+CLASS_TRANSLATIONS = {
+    "Pepper__bell___Bacterial_spot": "Folha com mancha bacteriana",
+    "Pepper__bell___healthy": "Folha saudável",
+
+    "Potato___Early_blight": "Folha com requeima precoce",
+    "Potato___healthy": "Folha saudável",
+    "Potato___Late_blight": "Folha com requeima tardia",
+
+    "Tomato__Target_Spot": "Folha com mancha alvo",
+    "Tomato__Tomato_mosaic_virus": "Folha com vírus do mosaico",
+    "Tomato__Tomato_YellowLeaf__Curl_Virus": "Folha com vírus do enrolamento amarelo",
+    "Tomato_Bacterial_spot": "Folha com mancha bacteriana",
+    "Tomato_Early_blight": "Folha com requeima precoce",
+    "Tomato_healthy": "Folha saudável",
+    "Tomato_Late_blight": "Folha com requeima tardia",
+    "Tomato_Leaf_Mold": "Folha com mofo",
+    "Tomato_Septoria_leaf_spot": "Folha com mancha de septória",
+    "Tomato_Spider_mites_Two_spotted_spider_mite": "Folha com infestação de ácaros"
+}
+
+
 def generate_plant_feedback(result):
     diagnosis = result["diagnosis"]
     confidence = result["confidence"]
 
-    readable = diagnosis.replace("_", " ")
-
-    if "healthy" in diagnosis.lower():
+    if "saudável" in diagnosis.lower():
         status = "Saudável"
         message = "A planta aparenta estar saudável."
         recommendation = "Continue monitorando."
@@ -114,7 +139,7 @@ def generate_plant_feedback(result):
 
     else:
         status = "Doente"
-        message = f"A planta apresenta sinais de {readable}."
+        message = f"A planta apresenta sinais de {diagnosis}."
         recommendation = "Recomenda-se tratamento."
 
     return status, message, recommendation
