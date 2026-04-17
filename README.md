@@ -30,7 +30,8 @@ A aplicação permite o envio de imagens de plantas através do navegador, reali
 
 ## 📸 Demonstração
 
-<img width="1896" height="873" alt="image" src="https://github.com/user-attachments/assets/55415df8-f85a-4530-a46e-2f8667e44921" />
+<img width="1887" height="862" alt="image" src="https://github.com/user-attachments/assets/74e48d01-1f25-4d18-9fc8-8ce4fc79e676" />
+
 
 
 ---
