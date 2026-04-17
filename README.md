@@ -1,58 +1,119 @@
-# PlantVision Web
+# 🌿 PlantVision AI
 
-Local web interface for plant disease diagnosis using the existing Python ML engine.
+Sistema web local para diagnóstico de doenças em plantas utilizando Inteligência Artificial e visão computacional.
 
-## Features
+A aplicação permite o envio de imagens de plantas através do navegador, realizando a classificação automática da condição da planta com base em um modelo de Deep Learning, além de fornecer nível de confiança e uma visualização interpretável com Grad-CAM.
 
-- Upload a plant image through the browser
-- AI-powered disease classification (4 classes)
-- Confidence score and reliability indicator
-- Top-3 predictions with probabilities
-- GradCAM heatmap visualization
+---
 
-## Requirements
+## 🚀 Tecnologias utilizadas
 
-Python 3.12+ with the packages in `requirements.txt`.
+* Python
+* FastAPI
+* TensorFlow / Keras
+* OpenCV
+* NumPy
+* Matplotlib
 
-## Installation
+---
+
+## 🧠 Funcionalidades
+
+* Upload de imagens de plantas via interface web
+* Classificação automática de doenças (modelo de IA)
+* Exibição de nível de confiança (confidence score)
+* Top 3 previsões com probabilidades
+* Visualização com Grad-CAM (explicabilidade do modelo)
+* Execução 100% local (sem dependência de APIs externas)
+
+---
+
+## 📸 Demonstração
+
+<img width="1896" height="873" alt="image" src="https://github.com/user-attachments/assets/55415df8-f85a-4530-a46e-2f8667e44921" />
+
+
+---
+
+## ⚙️ Instalação
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Running the Application
+---
 
-Start the FastAPI server:
+## ▶️ Executando a aplicação
+
+Inicie o servidor FastAPI:
 
 ```bash
 uvicorn app:app --reload --port 8000
-OU 
+```
+
+ou
+
+```bash
 python -m uvicorn app:app --reload --port 8000
 ```
 
-Open your browser: [http://localhost:8000](http://localhost:8000)
+Acesse no navegador:
 
-## Usage
+```
+http://localhost:8000
+```
 
-1. Click "Choose File" and select a plant image (JPG, PNG, etc.)
-2. Click "Analyze"
-3. Wait a few seconds for the AI to process
-4. View diagnosis, confidence, top-3 predictions, and GradCAM heatmap
+---
 
-## Test Image
+## 🧪 Como usar
 
-A sample image is included at `codigo/teste.jpg` for quick testing.
+1. Clique em "Choose File" e selecione uma imagem de planta (JPG, PNG, etc.)
+2. Clique em "Analyze"
+3. Aguarde alguns segundos para o processamento
+4. Visualize:
 
-## Project Structure
+   * Diagnóstico
+   * Nível de confiança
+   * Top 3 previsões
+   * Grad-CAM (mapa de calor)
 
-- `app.py` — FastAPI backend
-- `index.html` — Frontend page
-- `static/` — Static assets (JS, GradCAM outputs)
-- `src/diagnosis/` — Reusable diagnosis service (Phase 1)
-- `codigo/` — Original model and scripts (unchanged)
+---
 
-## Notes
+## 🧪 Imagem de teste
 
-- Runs entirely locally — no internet required after dependencies installed
-- Model file: `codigo/plant_model.h5` (included)
-- GradCAM outputs saved to `static/outputs/`
+Uma imagem de exemplo está disponível em:
+
+```
+codigo/teste.jpg
+```
+
+---
+
+## 📂 Estrutura do projeto
+
+* `app.py` — Backend com FastAPI
+* `index.html` — Interface web
+* `static/` — Arquivos estáticos (JS, imagens e outputs)
+* `src/diagnosis/` — Serviço de diagnóstico reutilizável
+* `codigo/` — Modelo treinado e scripts originais
+
+---
+
+## 📌 Observações
+
+* A aplicação roda completamente local
+* Não requer conexão com internet após instalação
+* Modelo utilizado: `codigo/plant_model.h5`
+* Saídas do Grad-CAM são salvas em: `static/outputs/`
+
+---
+
+## 💡 Possíveis melhorias futuras
+
+* Deploy em nuvem (AWS, GCP, Azure)
+* API pública para integração
+* Suporte a mais tipos de plantas e doenças
+* Interface responsiva/mobile
+* Otimização do modelo para performance
+
+---
