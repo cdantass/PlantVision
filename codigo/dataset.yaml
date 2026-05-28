@@ -1,0 +1,7 @@
+path: D:/plant/plantvision/codigo/dataset_flat
+
+train: images/train
+val: images/val
+
+names:
+  0: disease_area
