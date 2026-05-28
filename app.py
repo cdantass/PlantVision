@@ -33,6 +33,45 @@ CLASS_NAMES = [
 MODEL_PATH = Path(__file__).parent / "codigo" / "plant_model.h5"
 OUTPUT_DIR = Path(__file__).parent / "static" / "outputs"
 
+# ---- Translations ----
+CLASS_TRANSLATIONS = {
+    "Pepper__bell___Bacterial_spot": "Folha com mancha bacteriana",
+    "Pepper__bell___healthy": "Folha saudável",
+    "Potato___Early_blight": "Folha com requeima precoce",
+    "Potato___healthy": "Folha saudável",
+    "Potato___Late_blight": "Folha com requeima tardia",
+    "Tomato__Target_Spot": "Folha com mancha alvo",
+    "Tomato__Tomato_mosaic_virus": "Folha com vírus do mosaico",
+    "Tomato__Tomato_YellowLeaf__Curl_Virus": "Folha com vírus do enrolamento amarelo",
+    "Tomato_Bacterial_spot": "Folha com mancha bacteriana",
+    "Tomato_Early_blight": "Folha com requeima precoce",
+    "Tomato_healthy": "Folha saudável",
+    "Tomato_Late_blight": "Folha com requeima tardia",
+    "Tomato_Leaf_Mold": "Folha com mofo",
+    "Tomato_Septoria_leaf_spot": "Folha com mancha de septória",
+    "Tomato_Spider_mites_Two_spotted_spider_mite": "Folha com infestação de ácaros"
+}
+
+def generate_plant_feedback(result):
+    """Generate status, message, and recommendation based on diagnosis result."""
+    diagnosis = result["diagnosis"]
+    confidence = result["confidence"]
+
+    if "saudável" in diagnosis.lower():
+        status = "Saudável"
+        message = "A planta aparenta estar saudável."
+        recommendation = "Continue monitorando."
+    elif confidence < 0.6:
+        status = "Inconclusivo"
+        message = "Não foi possível determinar com segurança."
+        recommendation = "Tente outra imagem."
+    else:
+        status = "Doente"
+        message = f"A planta apresenta sinais de {diagnosis}."
+        recommendation = "Recomenda-se tratamento."
+
+    return status, message, recommendation
+
 # ---- App Setup ----
 app = FastAPI(title="PlantVision Web")
 
@@ -100,45 +139,3 @@ async def analyze(file: UploadFile = File(...)) -> dict:
 async def serve_index():
     """Serve the frontend HTML page."""
     return FileResponse(Path(__file__).parent / "index.html")
-
-CLASS_TRANSLATIONS = {
-    "Pepper__bell___Bacterial_spot": "Folha com mancha bacteriana",
-    "Pepper__bell___healthy": "Folha saudável",
-
-    "Potato___Early_blight": "Folha com requeima precoce",
-    "Potato___healthy": "Folha saudável",
-    "Potato___Late_blight": "Folha com requeima tardia",
-
-    "Tomato__Target_Spot": "Folha com mancha alvo",
-    "Tomato__Tomato_mosaic_virus": "Folha com vírus do mosaico",
-    "Tomato__Tomato_YellowLeaf__Curl_Virus": "Folha com vírus do enrolamento amarelo",
-    "Tomato_Bacterial_spot": "Folha com mancha bacteriana",
-    "Tomato_Early_blight": "Folha com requeima precoce",
-    "Tomato_healthy": "Folha saudável",
-    "Tomato_Late_blight": "Folha com requeima tardia",
-    "Tomato_Leaf_Mold": "Folha com mofo",
-    "Tomato_Septoria_leaf_spot": "Folha com mancha de septória",
-    "Tomato_Spider_mites_Two_spotted_spider_mite": "Folha com infestação de ácaros"
-}
-
-
-def generate_plant_feedback(result):
-    diagnosis = result["diagnosis"]
-    confidence = result["confidence"]
-
-    if "saudável" in diagnosis.lower():
-        status = "Saudável"
-        message = "A planta aparenta estar saudável."
-        recommendation = "Continue monitorando."
-
-    elif confidence < 0.6:
-        status = "Inconclusivo"
-        message = "Não foi possível determinar com segurança."
-        recommendation = "Tente outra imagem."
-
-    else:
-        status = "Doente"
-        message = f"A planta apresenta sinais de {diagnosis}."
-        recommendation = "Recomenda-se tratamento."
-
-    return status, message, recommendation
