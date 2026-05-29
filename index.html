@@ -185,6 +185,33 @@
                     <h4>GradCAM Heatmap</h4>
                     <img id="gradcam-image" src="" alt="GradCAM visualization">
                 </div>
+                <div id="yolo-detection-container" style="display: none;">
+                    <h4>YOLO Detection</h4>
+                    <img id="yolo-image" src="" alt="YOLO detection with bounding boxes">
+                </div>
+            </div>
+
+            <!-- YOLO Detection Stats -->
+            <div id="yolo-stats" style="display: none; margin-top: 1.5rem; padding: 1rem; background: #f9f9f9; border-radius: 6px;">
+                <h3>🎯 Detecção de Áreas Afetadas (YOLO)</h3>
+                <table class="top3-table">
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Áreas detectadas</td>
+                        <td id="yolo-num-detections">-</td>
+                    </tr>
+                    <tr>
+                        <td>Cobertura afetada</td>
+                        <td id="yolo-coverage">-</td>
+                    </tr>
+                    <tr>
+                        <td>Confiança média</td>
+                        <td id="yolo-avg-confidence">-</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

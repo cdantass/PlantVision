@@ -19,6 +19,14 @@ const top3Body = document.getElementById('top3-body');
 const originalImg = document.getElementById('original-image');
 const gradcamImg = document.getElementById('gradcam-image');
 
+// YOLO fields
+const yoloDetectionContainer = document.getElementById('yolo-detection-container');
+const yoloImg = document.getElementById('yolo-image');
+const yoloStats = document.getElementById('yolo-stats');
+const yoloNumDetections = document.getElementById('yolo-num-detections');
+const yoloCoverage = document.getElementById('yolo-coverage');
+const yoloAvgConfidence = document.getElementById('yolo-avg-confidence');
+
 function showError(message) {
     errorDisplay.textContent = message;
     errorDisplay.style.display = 'block';
@@ -37,6 +45,37 @@ function formatPercent(value) {
     return (value * 100).toFixed(2) + '%';
 }
 
+function displayYoloResults(yoloData) {
+    // Display YOLO detection results if available
+    if (!yoloData) {
+        yoloDetectionContainer.style.display = 'none';
+        yoloStats.style.display = 'none';
+        return;
+    }
+
+    // Show YOLO detection image
+    if (yoloData.annotated_path) {
+        yoloImg.src = yoloData.annotated_path;
+        yoloDetectionContainer.style.display = 'block';
+    }
+
+    // Show YOLO statistics
+    if (yoloData.num_detections !== undefined || yoloData.detection_percentage !== undefined) {
+        yoloNumDetections.textContent = yoloData.num_detections || 0;
+        yoloCoverage.textContent = (yoloData.detection_percentage || 0).toFixed(2) + '%';
+        
+        // Calculate average confidence
+        if (yoloData.confidences && yoloData.confidences.length > 0) {
+            const avgConf = yoloData.confidences.reduce((a, b) => a + b, 0) / yoloData.confidences.length;
+            yoloAvgConfidence.textContent = (avgConf * 100).toFixed(2) + '%';
+        } else {
+            yoloAvgConfidence.textContent = '-';
+        }
+        
+        yoloStats.style.display = 'block';
+    }
+}
+
 function resetPreview() {
     if (currentObjectUrl) {
         URL.revokeObjectURL(currentObjectUrl);
@@ -44,6 +83,9 @@ function resetPreview() {
     }
     originalImg.removeAttribute('src');
     gradcamImg.removeAttribute('src');
+    yoloImg.removeAttribute('src');
+    yoloDetectionContainer.style.display = 'none';
+    yoloStats.style.display = 'none';
 }
 
 async function submitAnalysis() {
@@ -127,6 +169,11 @@ async function submitAnalysis() {
         currentObjectUrl = URL.createObjectURL(file);
         originalImg.src = currentObjectUrl;
         gradcamImg.src = data.heatmap_path || '/static/outputs/gradcam_placeholder.jpg';
+
+        // ===============================
+        // YOLO DETECTION
+        // ===============================
+        displayYoloResults(data.yolo);
 
         resultSection.style.display = 'block';
 
